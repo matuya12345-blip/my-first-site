@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>UNKNOWN v2.0</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: #05060a;
+    color: #f3f3f3;
+    font-family: "Segoe UI", "Yu Gothic", sans-serif;
+    overflow-x: hidden;
+    transition: background 1.5s ease;
+}
+
+canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* STATUS */
+
+.status {
+    position: fixed;
+    top: 25px;
+    right: 30px;
+    z-index: 20;
+    font-family: monospace;
+    font-size: 11px;
+    line-height: 1.8;
+    color: #777;
+    text-align: right;
+    letter-spacing: 1px;
+}
+
+.online {
+    color: #8effb1;
+}
+
+/* HERO */
+
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.hero-inner {
+    width: 1100px;
+    max-width: 88%;
+}
+
+.label {
+    color: #666;
+    font-size: 11px;
+    letter-spacing: 6px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: clamp(70px, 14vw, 170px);
+    margin: 0;
+    line-height: .85;
+    letter-spacing: -8px;
+}
+
+.version {
+    color: #444;
+    font-family: monospace;
+    letter-spacing: 3px;
+    margin-top: 25px;
+}
+
+.hero-text {
+    margin-top: 45px;
+    color: #999;
+    font-size: 20px;
+    line-height: 2;
+    max-width: 650px;
+}
+
+.scroll {
+    position: absolute;
+    bottom: 35px;
+    font-family: monospace;
+    color: #444;
+    font-size: 11px;
+    letter-spacing: 3px;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: .25; }
+}
+
+/* SECTIONS */
+
+section {
+    width: 1000px;
+    max-width: 88%;
+    margin: auto;
+    padding: 140px 0;
+}
+
+.section-id {
+    color: #555;
+    font-family: monospace;
+    letter-spacing: 2px;
+}
+
+h2 {
+    font-size: clamp(38px, 6vw, 70px);
+    margin: 15px 0 60px;
+}
+
+/* CARDS */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px,1fr));
+    gap: 16px;
+}
+
+.card {
+    min-height: 270px;
+    padding: 28px;
+    border: 1px solid #202126;
+    background: rgba(5,6,10,.55);
+    backdrop-filter: blur(6px);
+    transition: .35s;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    border-color: #777;
+    background: rgba(20,22,30,.8);
+}
+
+.card-id {
+    color: #555;
+    font-family: monospace;
+}
+
+.card h3 {
+    margin-top: 65px;
+    font-size: 27px;
+}
+
+.card p {
+    color: #888;
+    line-height: 1.8;
+}
+
+/* SIGNAL MACHINE */
+
+.machine {
+    text-align: center;
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+}
+
+.machine-box {
+    min-height: 430px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#signalNumber {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: clamp(65px, 12vw, 130px);
+    letter-spacing: -5px;
+    transition: .25s;
+}
+
+#signalText {
+    font-size: clamp(17px, 3vw, 25px);
+    min-height: 80px;
+    margin-top: 25px;
+    letter-spacing: 2px;
+    transition: opacity .4s;
+}
+
+button {
+    margin-top: 25px;
+    padding: 18px 40px;
+    background: white;
+    color: black;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 2px;
+    transition: .25s;
+}
+
+button:hover {
+    transform: scale(1.06);
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+/* MEMORY */
+
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap: 15px;
+}
+
+.memory {
+    border-top: 1px solid #333;
+    padding-top: 25px;
+}
+
+.memory-value {
+    font-family: monospace;
+    font-size: 35px;
+}
+
+.memory-name {
+    color: #666;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-top: 8px;
+}
+
+/* LOG */
+
+.log {
+    border-left: 1px solid #333;
+    padding-left: 35px;
+}
+
+.log-item {
+    margin: 55px 0;
+}
+
+.log-day {
+    font-family: monospace;
+    color: #555;
+}
+
+.log-item h3 {
+    font-size: 25px;
+}
+
+.log-item p {
+    color: #888;
+    line-height: 1.8;
+}
+
+/* FOOTER */
+
+footer {
+    border-top: 1px solid #222;
+    padding: 80px 6%;
+    display: flex;
+    justify-content: space-between;
+    color: #555;
+    font-family: monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+@media(max-width:600px) {
+    .status {
+        top: 12px;
+        right: 15px;
+    }
+
+    h1 {
+        letter-spacing: -5px;
+    }
+
+    footer {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="space"></canvas>
+
+<div class="status">
+    SYSTEM <span class="online">● ONLINE</span><br>
+    VISITS <span id="topVisits">0</span><br>
+    SIGNALS <span id="topSignals">0</span>
+</div>
+
+
+<div class="hero">
+
+    <div class="hero-inner">
+
+        <div class="label">
+            PERSONAL EXPLORATION SYSTEM
+        </div>
+
+        <h1>UNKNOWN.</h1>
+
+        <div class="version">
+            VERSION 2.0 / ACTIVE
+        </div>
+
+        <div class="hero-text">
+            知らないことは、<br>
+            まだ世界が残っているということ。
+            <br><br>
+            Programming / Web / Music / Ideas<br>
+            and everything I haven't met yet.
+        </div>
+
+    </div>
+
+    <div class="scroll">
+        SCROLL TO EXPLORE ↓
+    </div>
+
+</div>
+
+
+<section>
+
+    <div class="section-id">
+        01 / EXPLORATION
+    </div>
+
+    <h2>What am I touching?</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <div class="card-id">001</div>
+            <h3>PYTHON</h3>
+            <p>
+                コンピュータに命令する。
+                自動化、データ、API。
+                コードが現実へ触れる入口。
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="card-id">002</div>
+            <h3>WEB</h3>
+            <p>
+                HTML、サーバー、ブラウザ。
+                普段見ているインターネットを
+                作る側から覗いてみる。
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="card-id">003</div>
+            <h3>MUSIC</h3>
+            <p>
+                数分間の音が、
+                なぜ何十年前の記憶まで
+                一瞬で連れ戻すのか。
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="card-id">004</div>
+            <h3>IDEAS</h3>
+            <p>
+                答えを集めるより、
+                見方を増やす。
+                離れた知識がつながる瞬間を待つ。
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="machine">
+
+    <div class="section-id">
+        02 / UNKNOWN SIGNAL
+    </div>
+
+    <h2>Ask the unknown.</h2>
+
+    <div class="machine-box">
+
+        <div id="signalNumber">
+            000000
+        </div>
+
+        <div id="signalText">
+            NO SIGNAL RECEIVED.
+        </div>
+
+        <button onclick="receiveSignal()">
+            RECEIVE SIGNAL
+        </button>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <div class="section-id">
+        03 / LOCAL MEMORY
+    </div>
+
+    <h2>This browser remembers.</h2>
+
+    <div class="memory-grid">
+
+        <div class="memory">
+            <div class="memory-value" id="visits">
+                0
+            </div>
+            <div class="memory-name">
+                PAGE VISITS
+            </div>
+        </div>
+
+        <div class="memory">
+            <div class="memory-value" id="signals">
+                0
+            </div>
+            <div class="memory-name">
+                SIGNALS RECEIVED
+            </div>
+        </div>
+
+        <div class="memory">
+            <div class="memory-value" id="firstSeen">
+                ----
+            </div>
+            <div class="memory-name">
+                FIRST SEEN
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section>
+
+    <div class="section-id">
+        04 / EXPLORATION LOG
+    </div>
+
+    <h2>System history.</h2>
+
+    <div class="log">
+
+        <div class="log-item">
+            <div class="log-day">DAY 001</div>
+            <h3>Pythonを初めて動かした。</h3>
+            <p>
+                コンピュータに、自分の命令が通った。
+            </p>
+        </div>
+
+        <div class="log-item">
+            <div class="log-day">DAY 002</div>
+            <h3>APIという入口を知った。</h3>
+            <p>
+                プログラム同士が会話できることを知った。
+            </p>
+        </div>
+
+        <div class="log-item">
+            <div class="log-day">DAY 003</div>
+            <h3>localhostを動かした。</h3>
+            <p>
+                自分のPCがWebサーバーになった。
+            </p>
+        </div>
+
+        <div class="log-item">
+            <div class="log-day">DAY 004</div>
+            <h3>世界へ公開した。</h3>
+            <p>
+                PCにあったindex.htmlが、
+                URLを持ったWebサイトになった。
+            </p>
+        </div>
+
+        <div class="log-item">
+            <div class="log-day">DAY 005</div>
+            <h3>Webページに記憶を与えた。</h3>
+            <p>
+                JavaScriptとlocalStorage。
+                ページを閉じても記録が残る。
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer>
+    <div>UNKNOWN PROJECT / 2026</div>
+    <div>KEEP EXPLORING.</div>
+</footer>
+
+
+<script>
+
+/* =========================
+   MEMORY
+========================= */
+
+let visits =
+    Number(localStorage.getItem("unknownVisits") || 0);
+
+visits++;
+
+localStorage.setItem(
+    "unknownVisits",
+    visits
+);
+
+let signalCount =
+    Number(localStorage.getItem("unknownSignals") || 0);
+
+let firstSeen =
+    localStorage.getItem("unknownFirstSeen");
+
+if (!firstSeen) {
+
+    const now = new Date();
+
+    firstSeen =
+        now.getFullYear() + "." +
+        String(now.getMonth()+1).padStart(2,"0") + "." +
+        String(now.getDate()).padStart(2,"0");
+
+    localStorage.setItem(
+        "unknownFirstSeen",
+        firstSeen
+    );
+}
+
+function updateMemory() {
+
+    document.getElementById("visits").innerText =
+        visits;
+
+    document.getElementById("signals").innerText =
+        signalCount;
+
+    document.getElementById("firstSeen").innerText =
+        firstSeen;
+
+    document.getElementById("topVisits").innerText =
+        visits;
+
+    document.getElementById("topSignals").innerText =
+        signalCount;
+}
+
+updateMemory();
+
+
+/* =========================
+   SIGNAL MACHINE
+========================= */
+
+const messages = [
+
+    "知らない世界が、まだ残っている。",
+
+    "答えより、面白い問いを探せ。",
+
+    "偶然をひとつ拾ってみる。",
+
+    "寄り道が本線になる日もある。",
+
+    "理解できないものを、すぐ捨てるな。",
+
+    "昔好きだったものを思い出せ。",
+
+    "今日はひとつだけ、初めてをやれ。",
+
+    "遠くを見る前に、目の前をよく見る。",
+
+    "変化しているなら、止まってはいない。",
+
+    "何も起きない時間にも意味はある。",
+
+    "世界は思っているより広い。",
+
+    "まだ名前のない興味を追いかけろ。"
+
+];
+
+
+function receiveSignal() {
+
+    const numberElement =
+        document.getElementById("signalNumber");
+
+    const textElement =
+        document.getElementById("signalText");
+
+    textElement.innerText =
+        "SEARCHING...";
+
+    let flashes = 0;
+
+    const animation =
+        setInterval(function() {
+
+            const temporary =
+                Math.floor(
+                    Math.random() * 1000000
+                );
+
+            numberElement.innerText =
+                String(temporary)
+                .padStart(6,"0");
+
+            flashes++;
+
+            if (flashes > 12) {
+
+                clearInterval(animation);
+
+                const finalNumber =
+                    Math.floor(
+                        Math.random() * 1000000
+                    );
+
+                const message =
+                    messages[
+                        Math.floor(
+                            Math.random()
+                            * messages.length
+                        )
+                    ];
+
+                numberElement.innerText =
+                    String(finalNumber)
+                    .padStart(6,"0");
+
+                textElement.innerText =
+                    message;
+
+                signalCount++;
+
+                localStorage.setItem(
+                    "unknownSignals",
+                    signalCount
+                );
+
+                updateMemory();
+
+                const hue =
+                    Math.floor(
+                        Math.random() * 360
+                    );
+
+                document.body.style.background =
+                    `hsl(${hue}, 20%, 4%)`;
+
+                createBurst();
+            }
+
+        }, 55);
+}
+
+
+/* =========================
+   PARTICLES
+========================= */
+
+const canvas =
+    document.getElementById("space");
+
+const ctx =
+    canvas.getContext("2d");
+
+let width;
+let height;
+
+let mouseX = -1000;
+let mouseY = -1000;
+
+let particles = [];
+
+
+function resize() {
+
+    width =
+        canvas.width =
+        window.innerWidth;
+
+    height =
+        canvas.height =
+        window.innerHeight;
+}
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+resize();
+
+
+for (let i = 0; i < 90; i++) {
+
+    particles.push({
+
+        x: Math.random() * width,
+
+        y: Math.random() * height,
+
+        vx:
+            (Math.random() - .5) * .25,
+
+        vy:
+            (Math.random() - .5) * .25,
+
+        size:
+            Math.random() * 1.8 + .3
+    });
+}
+
+
+window.addEventListener(
+    "mousemove",
+    function(event) {
+
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+    }
+);
+
+
+function createBurst() {
+
+    for (let i = 0; i < 35; i++) {
+
+        particles.push({
+
+            x: width / 2,
+
+            y: height / 2,
+
+            vx:
+                (Math.random() - .5) * 7,
+
+            vy:
+                (Math.random() - .5) * 7,
+
+            size:
+                Math.random() * 3 + 1,
+
+            life: 150
+        });
+    }
+}
+
+
+function animate() {
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    for (
+        let i = particles.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const p =
+            particles[i];
+
+        const dx =
+            mouseX - p.x;
+
+        const dy =
+            mouseY - p.y;
+
+        const distance =
+            Math.sqrt(
+                dx * dx + dy * dy
+            );
+
+        if (distance < 150) {
+
+            p.vx += dx * 0.00004;
+            p.vy += dy * 0.00004;
+        }
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        p.vx *= .995;
+        p.vy *= .995;
+
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle =
+            "rgba(255,255,255,.55)";
+
+        ctx.fill();
+
+        if (p.life !== undefined) {
+
+            p.life--;
+
+            if (p.life <= 0) {
+                particles.splice(i,1);
+            }
+        }
+    }
+
+    requestAnimationFrame(
+        animate
+    );
+}
+
+animate();
+
+</script>
+
+</body>
+</html>
